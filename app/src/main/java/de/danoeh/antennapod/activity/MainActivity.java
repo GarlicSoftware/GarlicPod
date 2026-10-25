@@ -92,9 +92,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ProcessLifecycleOwner;
 
 /**
  * The activity that is shown when the user launches the app.
@@ -122,13 +119,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     private Insets systemBarInsets = Insets.NONE;
     private boolean playerVisible;
     private boolean openPlayerWhenAvailable;
-    private boolean openPlayerOnReturn;
-    private final DefaultLifecycleObserver foregroundObserver = new DefaultLifecycleObserver() {
-        @Override
-        public void onStop(@NonNull LifecycleOwner owner) {
-            openPlayerOnReturn = true;
-        }
-    };
+    private boolean openPlayerOnReturn = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,7 +130,6 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
         }
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         super.onCreate(savedInstanceState);
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(foregroundObserver);
         setContentView(R.layout.main);
         recycledViewPool.setMaxRecycledViews(R.id.view_type_episode_item, 25);
         checkFirstLaunch();
@@ -379,7 +369,6 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ProcessLifecycleOwner.get().getLifecycle().removeObserver(foregroundObserver);
         if (drawerLayout != null && drawerToggle != null) {
             drawerLayout.removeDrawerListener(drawerToggle);
         }
@@ -651,7 +640,15 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     @Override
     protected void onResume() {
         super.onResume();
-        if (openPlayerOnReturn && PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0) {
+        Intent intent = getIntent();
+        boolean explicitNavigation = intent.hasExtra(MainActivityStarter.EXTRA_EPISODE_ID)
+                || intent.hasExtra(MainActivityStarter.EXTRA_FEED_ID)
+                || intent.hasExtra(MainActivityStarter.EXTRA_FRAGMENT_TAG)
+                || intent.hasExtra(MainActivityStarter.EXTRA_OPEN_DRAWER)
+                || intent.hasExtra(MainActivityStarter.EXTRA_OPEN_DOWNLOAD_LOGS)
+                || intent.getData() != null;
+        if (openPlayerOnReturn && !explicitNavigation
+                && PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0) {
             getIntent().putExtra(MainActivityStarter.EXTRA_OPEN_PLAYER, true);
         }
         openPlayerOnReturn = false;
@@ -676,6 +673,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     @Override
     protected void onStop() {
         super.onStop();
+        openPlayerOnReturn = true;
         EventBus.getDefault().unregister(this);
     }
 
@@ -840,6 +838,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        openPlayerOnReturn = false;
         setIntent(intent);
         handleNavIntent();
     }

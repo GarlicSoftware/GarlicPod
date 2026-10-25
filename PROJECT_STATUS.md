@@ -202,3 +202,11 @@ No data reset or subscription import was performed.
 - Nine MediaLibrarySessionCallback tests passed, including six new gesture regression tests. :app:assembleDebug passed for free and play in 2 minutes 58 seconds.
 - Confirmed the free APK application ID, installed it with data preserved, and reopened GarlicPod successfully.
 - Owner reported the actual car single/double-press test was perfect. Device logs also confirmed single and double previous-key classification. Volume behavior is unchanged.
+
+## Player restoration on activity return - October 25, 2026
+
+- Replaced the process-level foreground observer with activity creation/stop tracking. Restoring an existing task now requests the player without depending on a fresh launcher intent or the delayed process lifecycle.
+- Explicit feed/episode/fragment/deep-link navigation retains priority; onNewIntent consumes that navigation before resume can substitute the player.
+- :app:assembleDebug passed for free and play in 18 seconds. Verified free APK identity and installed the update with data preserved.
+- Galaxy S22 Ultra visual checks passed: cold MainActivity start without extras opened the full player; explicit feed navigation opened the feed; Home then a HOT launcher task restoration reopened the full player.
+- Episode remained paused at 00:03:40 throughout. Left the full player visible. No autoplay or playback preferences changed.

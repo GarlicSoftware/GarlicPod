@@ -12,7 +12,9 @@ using `MainActivityStarter.EXTRA_OPEN_PLAYER`, so explicit feed/episode navigati
 Skip interval dialogs share `SkipPreferenceDialog`; preserve independent big-skip preferences when modifying controls.
 
 MainActivity defers player expansion until `setPlayerVisible(true)` signals media is ready.
-Its process lifecycle observer requests player expansion when returning from background without a new launch intent.
+Its activity lifecycle requests player expansion on creation and return from background without explicit navigation.
+This also covers Android restoring an existing task without delivering a new launcher intent. Explicit new navigation
+is consumed before resume so opening a feed or episode does not get replaced by the player.
 Keep explicit feed/episode navigation ahead of the open-player intent branch, and do not start audio from navigation.
 
 The Home navigation identifier now represents Player and expands the playback sheet. Legacy Home routes
