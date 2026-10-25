@@ -33,3 +33,5 @@ gradle.properties
 .kotlin
 .claude
 .cursor
+*.jks
+**/keystore

@@ -6,7 +6,7 @@
         android:shortcutId="queue"
         android:shortcutShortLabel="@string/queue_label">
         <intent
-            android:action="de.danoeh.antennapod.intents.MAIN_ACTIVITY">
+            android:action="com.garlicsoftware.garlicpod.intents.MAIN_ACTIVITY">
             <category android:name="android.intent.category.DEFAULT"/>
             <extra
                 android:name="fragment_tag"
@@ -20,7 +20,7 @@
         android:shortcutId="episodes"
         android:shortcutShortLabel="@string/episodes_label">
         <intent
-            android:action="de.danoeh.antennapod.intents.MAIN_ACTIVITY">
+            android:action="com.garlicsoftware.garlicpod.intents.MAIN_ACTIVITY">
             <category android:name="android.intent.category.DEFAULT"/>
             <extra
                 android:name="fragment_tag"
@@ -34,7 +34,7 @@
         android:shortcutId="subscriptions"
         android:shortcutShortLabel="@string/subscriptions_label">
         <intent
-            android:action="de.danoeh.antennapod.intents.MAIN_ACTIVITY">
+            android:action="com.garlicsoftware.garlicpod.intents.MAIN_ACTIVITY">
             <category android:name="android.intent.category.DEFAULT"/>
             <extra
                 android:name="fragment_tag"
@@ -48,7 +48,7 @@
         android:shortcutId="refresh"
         android:shortcutShortLabel="@string/refresh_label">
         <intent
-            android:action="de.danoeh.antennapod.intents.MAIN_ACTIVITY">
+            android:action="com.garlicsoftware.garlicpod.intents.MAIN_ACTIVITY">
             <category android:name="android.intent.category.DEFAULT"/>
             <extra
                 android:name="refresh_on_start"

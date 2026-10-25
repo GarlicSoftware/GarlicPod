@@ -16,13 +16,20 @@ Phase 1 only. Preserve existing player, subscriptions, downloads, and storage be
 ## Build results and work in progress
 
 - Unmodified build with Java 25 failed: Unsupported class file major version 69.
-- Unmodified build retried with JDK 21. Outcome pending.
-- No phone installation or playback verification yet.
-- App identity changes pending the stock build result.
+- Unmodified free and Play debug APKs built successfully with JDK 21: 7m 48s, 1224 tasks executed.
+- GarlicPod free debug installed successfully alongside AntennaPod and launched to MainActivity.
+- Added The Daily public RSS feed using the normal interface; subscription and episode/show notes loaded.
+- Streaming reached PLAYING with position advancing from 2968 ms to 15028 ms and error=null; paused afterward.
+- Audible output needs human confirmation. Bluetooth, downloads/offline playback, and full backup restore remain untested.
+- Original AntennaPod remains installed at version 3.12.3 with unchanged lastUpdateTime (2026-10-13). Its private data was not accessed.
+- Identity configured: com.garlicsoftware.garlicpod (debug suffix .debug), unique provider and launcher action, GarlicPod labels.
+- App-specific subscription scheme renamed garlicpod-subscribe; upstream-domain auto-verification disabled.
+- Removed inherited upstream backup service registration; native manual export/import retained.
+- GitHub main branch exists, documentation is pushed, and main is the default branch.
 
 ## Decisions
 
-Use JDK 21, Gradle wrapper 8.13, AGP 8.11.0, SDK/target 36, min SDK 23.
+Use JDK 21, Gradle wrapper 8.13, AGP 8.11.0, build tools 35.0.0, SDK/target 36, min SDK 23.
 Retain Java package namespaces to keep changes focused; give application and provider separate identifiers.
 First device artifact will be free debug; Google Play/Cast and Wear OS are outside this initial validation.
 Do not automatically merge upstream releases. Preserve GPL licensing and attribution.
@@ -43,3 +50,20 @@ Player-first startup without autoplay; small artwork and large 10s back / play-p
 Map hardware previous/next at media-session layer, preserving manual episode selection.
 Reuse upstream resume logic where possible: 10-minute pause threshold, 30-second rewind, persistent state,
 nonnegative position, and no false pause caused by seeking. Test actual Bluetooth hardware early.
+
+## Investigation for later phases
+
+Media3PlaybackService already maps hardware actions through UserPreferences and separates other-app requests.
+RewindAfterPauseUtils and existing tests provide upstream automatic rewind; desired thresholds still need adaptation.
+Generic RSS/OPML/share links remain supported and can show the normal Android app chooser. GarlicPod does not claim
+verified ownership of AntennaPod's domain. Java namespaces and original icon are retained for the first baseline.
+
+## GarlicPod build and artifact
+
+Both debug variants passed :app:assembleDebug in 52s (57 executed, 1167 up-to-date).
+Free APK: app/build/outputs/apk/free/debug/app-free-debug.apk.
+Installed ID: com.garlicsoftware.garlicpod.debug; label: GarlicPod Debug.
+FileProvider: com.garlicsoftware.garlicpod.debug.provider; startup provider uses the same app prefix.
+Merged manifest and APK metadata inspected before installation. Remaining compiler/resource warnings also occur upstream.
+Unit tests and lint were not run for the identity-only change; device launch/subscription/stream/pause checks were used.
+The first attempted BBC test feed returned HTTP 404; switched to a verified live Simplecast feed.

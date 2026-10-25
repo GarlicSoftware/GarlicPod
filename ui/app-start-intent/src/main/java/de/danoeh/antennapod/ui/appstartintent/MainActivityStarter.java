@@ -10,7 +10,7 @@ import android.os.Bundle;
  * Does not require a dependency on the actual implementation of the activity.
  */
 public class MainActivityStarter {
-    public static final String INTENT = "de.danoeh.antennapod.intents.MAIN_ACTIVITY";
+    public static final String INTENT = "com.garlicsoftware.garlicpod.intents.MAIN_ACTIVITY";
     public static final String EXTRA_OPEN_PLAYER = "open_player";
     public static final String EXTRA_FEED_ID = "fragment_feed_id";
     public static final String EXTRA_EPISODE_ID = "episode_id";

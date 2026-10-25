@@ -41,4 +41,3 @@ If you want to translate AntennaPod into another language, you can visit our [We
 ## Building AntennaPod
 
 You can build AntennaPod just like any other Android project. Refer to the [instructions](https://github.com/AntennaPod/AntennaPod/blob/develop/CONTRIBUTING.md) for more details.
-
