@@ -104,6 +104,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.viewpager2:viewpager2:$viewPager2Version"
     implementation "androidx.work:work-runtime:$workManagerVersion"
+    implementation "androidx.lifecycle:lifecycle-process:2.8.3"
     implementation "com.google.android.material:material:$googleMaterialVersion"
     implementation "androidx.drawerlayout:drawerlayout:1.2.0"
     implementation "androidx.media3:media3-common:$media3Version"

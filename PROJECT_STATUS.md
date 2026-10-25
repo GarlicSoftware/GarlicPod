@@ -38,7 +38,7 @@ Debug signing differs between machines unless handled separately and securely. N
 
 ## Next steps
 
-1. Inspect the three-row player on the unlocked phone and test skips/configuration/startup.
+1. Gather user feedback on the verified portrait player layout.
 2. Refine layout from user feedback.
 3. Test the real Bluetooth controller early in Phase 3.
 4. Validate downloads/offline playback and native subscription import before stabilization.
@@ -81,5 +81,21 @@ Normal launcher entry requests expanded player when an episode is selected, with
 Long-press each skip target to use the existing interval dialog (5, 10, 15, 20, 30, 45, 60 seconds).
 Big-skip settings are independent; small skips reuse upstream rewind/forward preferences (new forward default 10s).
 Existing explicitly saved small skip times are preserved and can be adjusted by holding the button.
-First implementation built both variants in 32s and installed as an update. Phone currently locked; visual and behavior
-checks pending unlock. No data reset or subscription import was performed.
+First implementation built both variants in 32s and installed as an update. Phone checks completed after unlock.
+No data reset or subscription import was performed.
+
+## Phase 2 phone validation
+
+- Portrait layout visually inspected on Galaxy S22 Ultra; all five touch areas and metadata fit.
+- Paused skip sequence verified by Android media-session position: -60000, -10000, +10000, +60000 ms.
+- Long-pressed big forward and changed 60 to 45 seconds. The setting persisted through APK updates and cold starts.
+- Restored big forward to 60 seconds. All four controls show 60 / 10 / 10 / 60.
+- Artwork toggled PLAYING then PAUSED. The large play control successfully paused playback.
+- Cold launcher entry and a hot return from the home screen both opened the full player without autoplay.
+- Startup expansion waits for asynchronous media loading. MainActivity also observes process backgrounding because
+  Android can bring an existing task forward without delivering a new launch intent.
+- Added AndroidX lifecycle-process 2.8.3 for the process observer, matching existing cached lifecycle artifacts.
+- A compile attempt without that direct dependency failed; adding it resolved the missing ProcessLifecycleOwner class.
+- Final :app:assembleDebug passed for both variants in 42s. Updated free-debug APK installed successfully.
+- No unit tests/lint run; validation used the real phone. Landscape layout and Bluetooth remain untested.
+- Left the current episode paused on the full player.

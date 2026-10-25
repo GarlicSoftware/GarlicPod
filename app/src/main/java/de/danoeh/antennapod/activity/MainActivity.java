@@ -92,6 +92,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 /**
  * The activity that is shown when the user launches the app.
@@ -117,6 +120,15 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     private final RecyclerView.RecycledViewPool recycledViewPool = new RecyclerView.RecycledViewPool();
     private int lastTheme = 0;
     private Insets systemBarInsets = Insets.NONE;
+    private boolean playerVisible;
+    private boolean openPlayerWhenAvailable;
+    private boolean openPlayerOnReturn;
+    private final DefaultLifecycleObserver foregroundObserver = new DefaultLifecycleObserver() {
+        @Override
+        public void onStop(@NonNull LifecycleOwner owner) {
+            openPlayerOnReturn = true;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,6 +139,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
         }
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         super.onCreate(savedInstanceState);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(foregroundObserver);
         setContentView(R.layout.main);
         recycledViewPool.setMaxRecycledViews(R.id.view_type_episode_item, 25);
         checkFirstLaunch();
@@ -359,6 +372,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ProcessLifecycleOwner.get().getLifecycle().removeObserver(foregroundObserver);
         if (drawerLayout != null && drawerToggle != null) {
             drawerLayout.removeDrawerListener(drawerToggle);
         }
@@ -391,6 +405,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     }
 
     public void setPlayerVisible(boolean visible) {
+        playerVisible = visible;
         getBottomSheet().setLocked(!visible);
         findViewById(R.id.audioplayerFragment).setVisibility(visible ? View.VISIBLE : View.GONE);
         if (visible) {
@@ -418,6 +433,15 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
         playerView.setLayoutParams(playerParams);
         RelativeLayout playerContent = findViewById(R.id.playerContent);
         playerContent.setPadding(systemBarInsets.left, systemBarInsets.top, systemBarInsets.right, 0);
+        if (visible && openPlayerWhenAvailable) {
+            openPlayerWhenAvailable = false;
+            playerContent.post(() -> {
+                if (playerVisible) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    bottomSheetCallback.onSlide(null, 1.0f);
+                }
+            });
+        }
     }
 
     public RecyclerView.RecycledViewPool getRecycledViewPool() {
@@ -608,6 +632,10 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     @Override
     protected void onResume() {
         super.onResume();
+        if (openPlayerOnReturn && PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0) {
+            getIntent().putExtra(MainActivityStarter.EXTRA_OPEN_PLAYER, true);
+        }
+        openPlayerOnReturn = false;
         handleNavIntent();
 
         boolean hasBottomNavigation = bottomNavigation != null;
@@ -761,9 +789,17 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
                 }
             }
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        } else if (intent.getBooleanExtra(MainActivityStarter.EXTRA_OPEN_PLAYER, false)) {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            bottomSheetCallback.onSlide(null, 1.0f);
+        } else if (intent.getBooleanExtra(MainActivityStarter.EXTRA_OPEN_PLAYER, false)
+                || (PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0
+                && ((Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasCategory(Intent.CATEGORY_LAUNCHER))
+                || (intent.getComponent() != null
+                && SplashActivity.class.getName().equals(intent.getComponent().getClassName()))))) {
+            if (playerVisible) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                bottomSheetCallback.onSlide(null, 1.0f);
+            } else {
+                openPlayerWhenAvailable = true;
+            }
         } else {
             handleDeeplink(intent.getData());
         }
