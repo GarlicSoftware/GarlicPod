@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import de.danoeh.antennapod.system.CrashReportWriter;
+import de.danoeh.antennapod.storage.preferences.PlaybackPreferences;
+import de.danoeh.antennapod.ui.appstartintent.MainActivityStarter;
 import de.danoeh.antennapod.storage.database.PodDBAdapter;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -36,6 +38,8 @@ public class SplashActivity extends Activity {
                 .subscribe(
                     () -> {
                         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent.putExtra(MainActivityStarter.EXTRA_OPEN_PLAYER,
+                                PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0);
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         finish();

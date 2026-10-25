@@ -53,3 +53,10 @@ validated. Do not copy private app databases directly.
 GarlicPod is an independent derivative, not an official AntennaPod release. Preserve GPL notices and provide matching
 source when distributing APKs. Modifications and validation are tracked in PROJECT_STATUS.md and Git history.
 
+
+## GarlicPod player
+
+Normal launcher startup opens the full player when an episode is selected, without autoplay.
+Skip buttons use three large rows around a full-width play/pause control. Hold any skip button to choose its seconds.
+Big rewind and big forward have independent saved settings. Small skips reuse AntennaPod's original interval settings.
+Artwork also toggles play/pause. Collapse the player with the down arrow to manage podcasts normally.

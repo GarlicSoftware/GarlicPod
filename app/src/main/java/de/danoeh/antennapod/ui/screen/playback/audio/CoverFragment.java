@@ -80,7 +80,8 @@ public class CoverFragment extends Fragment {
         viewBinding = CoverFragmentBinding.inflate(inflater);
         viewBinding.imgvCover.setOnClickListener(v -> {
             if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
-                if (PlaybackService.isRunning) {
+                if (PlaybackService.isRunning
+                        && PlaybackPreferences.getCurrentPlayerStatus() == PlaybackPreferences.PLAYER_STATUS_PLAYING) {
                     PlaybackController.bindToMedia3Service(getActivity(), MediaController::pause);
                 } else if (media != null) {
                     new PlaybackServiceStarter(getContext(), media)
@@ -344,7 +345,8 @@ public class CoverFragment extends Fragment {
         viewBinding.coverFragment.setOrientation(isPortrait ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
 
         if (isPortrait) {
-            viewBinding.coverHolder.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, 0, 1));
+            viewBinding.coverHolder.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT,
+                    (int) (80 * getResources().getDisplayMetrics().density)));
             viewBinding.coverFragmentTextContainer.setLayoutParams(
                     new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         } else {

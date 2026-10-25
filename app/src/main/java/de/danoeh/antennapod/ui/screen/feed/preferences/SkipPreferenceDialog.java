@@ -21,6 +21,10 @@ public class SkipPreferenceDialog {
         int skipSecs;
         if (direction == SkipDirection.SKIP_FORWARD) {
             skipSecs = UserPreferences.getFastForwardSecs();
+        } else if (direction == SkipDirection.SKIP_BIG_FORWARD) {
+            skipSecs = UserPreferences.getBigFastForwardSecs();
+        } else if (direction == SkipDirection.SKIP_BIG_REWIND) {
+            skipSecs = UserPreferences.getBigRewindSecs();
         } else {
             skipSecs = UserPreferences.getRewindSecs();
         }
@@ -36,7 +40,12 @@ public class SkipPreferenceDialog {
         }
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle(direction == SkipDirection.SKIP_FORWARD ? R.string.pref_fast_forward : R.string.pref_rewind);
+        builder.setTitle(switch (direction) {
+            case SKIP_FORWARD -> R.string.pref_fast_forward;
+            case SKIP_REWIND -> R.string.pref_rewind;
+            case SKIP_BIG_FORWARD -> R.string.garlicpod_big_forward;
+            case SKIP_BIG_REWIND -> R.string.garlicpod_big_rewind;
+        });
         builder.setSingleChoiceItems(choices, checked, (dialog, which) -> {
             int choice = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
             if (choice < 0 || choice >= values.length) {
@@ -45,6 +54,10 @@ public class SkipPreferenceDialog {
                 int seconds = values[choice];
                 if (direction == SkipDirection.SKIP_FORWARD) {
                     UserPreferences.setFastForwardSecs(seconds);
+                } else if (direction == SkipDirection.SKIP_BIG_FORWARD) {
+                    UserPreferences.setBigFastForwardSecs(seconds);
+                } else if (direction == SkipDirection.SKIP_BIG_REWIND) {
+                    UserPreferences.setBigRewindSecs(seconds);
                 } else {
                     UserPreferences.setRewindSecs(seconds);
                 }
@@ -59,6 +72,6 @@ public class SkipPreferenceDialog {
     }
 
     public enum SkipDirection {
-        SKIP_FORWARD, SKIP_REWIND
+        SKIP_FORWARD, SKIP_REWIND, SKIP_BIG_FORWARD, SKIP_BIG_REWIND
     }
 }

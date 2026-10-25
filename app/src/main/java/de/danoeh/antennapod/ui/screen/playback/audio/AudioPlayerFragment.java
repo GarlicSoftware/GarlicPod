@@ -91,10 +91,10 @@ public class AudioPlayerFragment extends Fragment implements
     private TextView txtvPosition;
     private TextView txtvLength;
     private ChapterSeekBar sbPosition;
-    private ImageButton butRev;
+    private View butRev;
     private TextView txtvRev;
     private PlayButton butPlay;
-    private ImageButton butFF;
+    private View butFF;
     private TextView txtvFF;
     private ImageButton butSkip;
     private MaterialToolbar toolbar;
@@ -142,7 +142,7 @@ public class AudioPlayerFragment extends Fragment implements
         txtvSeek = root.findViewById(R.id.txtvSeek);
 
         setupLengthTextView();
-        setupControlButtons();
+        setupControlButtons(root);
         final ImageButton butPlaybackSpeed = root.findViewById(R.id.butPlaybackSpeed);
         butPlaybackSpeed.setOnClickListener(v -> new VariableSpeedDialog().show(getChildFragmentManager(), null));
         sbPosition.setOnSeekBarChangeListener(this);
@@ -187,7 +187,21 @@ public class AudioPlayerFragment extends Fragment implements
         sbPosition.setDividerPos(dividerPos);
     }
 
-    private void setupControlButtons() {
+    private void setupControlButtons(View root) {
+        View bigRewind = root.findViewById(R.id.butBigRev);
+        View bigForward = root.findViewById(R.id.butBigFF);
+        bigRewind.setOnClickListener(v -> seekBySeconds(-UserPreferences.getBigRewindSecs()));
+        bigForward.setOnClickListener(v -> seekBySeconds(UserPreferences.getBigFastForwardSecs()));
+        bigRewind.setOnLongClickListener(v -> {
+            SkipPreferenceDialog.showSkipPreference(getContext(),
+                    SkipPreferenceDialog.SkipDirection.SKIP_BIG_REWIND, root.findViewById(R.id.txtvBigRev));
+            return true;
+        });
+        bigForward.setOnLongClickListener(v -> {
+            SkipPreferenceDialog.showSkipPreference(getContext(),
+                    SkipPreferenceDialog.SkipDirection.SKIP_BIG_FORWARD, root.findViewById(R.id.txtvBigFF));
+            return true;
+        });
         butRev.setOnClickListener(v -> {
             if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
                 final FeedMedia media = currentMedia;
@@ -245,7 +259,7 @@ public class AudioPlayerFragment extends Fragment implements
         butFF.setOnLongClickListener(v -> {
             SkipPreferenceDialog.showSkipPreference(getContext(),
                     SkipPreferenceDialog.SkipDirection.SKIP_FORWARD, txtvFF);
-            return false;
+            return true;
         });
         butSkip.setOnClickListener(v -> {
             if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
@@ -255,6 +269,30 @@ public class AudioPlayerFragment extends Fragment implements
                         MediaButtonStarter.createIntent(getContext(), KeyEvent.KEYCODE_MEDIA_NEXT));
             }
         });
+    }
+
+    private void seekBySeconds(int seconds) {
+        final FeedMedia media = currentMedia;
+        if (media == null) {
+            return;
+        }
+        if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
+            PlaybackController.bindToMedia3Service(getContext(), controller -> {
+                if (controller.getCurrentMediaItem() != null) {
+                    long position = Math.max(0, controller.getCurrentPosition() + seconds * 1000L);
+                    if (controller.getDuration() > 0) {
+                        position = Math.min(controller.getDuration(), position);
+                    }
+                    controller.seekTo(position);
+                } else {
+                    seekWithoutPlaybackService(media, Math.max(0, Math.min(media.getDuration(),
+                            media.getPosition() + seconds * 1000)));
+                }
+            });
+        } else {
+            PlaybackController.bindToService(getActivity(), service -> service.seekTo(
+                    Math.max(0, Math.min(service.getDuration(), service.getCurrentPosition() + seconds * 1000))));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -360,6 +398,10 @@ public class AudioPlayerFragment extends Fragment implements
         EventBus.getDefault().register(this);
         txtvRev.setText(NumberFormat.getInstance().format(UserPreferences.getRewindSecs()));
         txtvFF.setText(NumberFormat.getInstance().format(UserPreferences.getFastForwardSecs()));
+        ((TextView) requireView().findViewById(R.id.txtvBigRev)).setText(
+                NumberFormat.getInstance().format(UserPreferences.getBigRewindSecs()));
+        ((TextView) requireView().findViewById(R.id.txtvBigFF)).setText(
+                NumberFormat.getInstance().format(UserPreferences.getBigFastForwardSecs()));
     }
 
     @Override

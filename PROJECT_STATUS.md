@@ -3,7 +3,7 @@
 ## Baseline and scope
 
 Started 2026-10-25 from stable AntennaPod 3.12.3, commit 175e5ef8fe3e125a5014d70ef0c57cf85661c71b.
-Phase 1 only. Preserve existing player, subscriptions, downloads, and storage behavior.
+Phase 1 validated by user; Phase 2 player UI in progress. Preserve subscriptions, downloads, and storage behavior.
 
 ## Completed setup
 
@@ -20,7 +20,7 @@ Phase 1 only. Preserve existing player, subscriptions, downloads, and storage be
 - GarlicPod free debug installed successfully alongside AntennaPod and launched to MainActivity.
 - Added The Daily public RSS feed using the normal interface; subscription and episode/show notes loaded.
 - Streaming reached PLAYING with position advancing from 2968 ms to 15028 ms and error=null; paused afterward.
-- Audible output needs human confirmation. Bluetooth, downloads/offline playback, and full backup restore remain untested.
+- User confirmed playback works and added TESD episodes. Bluetooth, downloads/offline playback, and full backup restore remain untested.
 - Original AntennaPod remains installed at version 3.12.3 with unchanged lastUpdateTime (2026-10-13). Its private data was not accessed.
 - Identity configured: com.garlicsoftware.garlicpod (debug suffix .debug), unique provider and launcher action, GarlicPod labels.
 - Existing subscription schemes retained for parser compatibility; upstream-domain auto-verification disabled.
@@ -38,8 +38,8 @@ Debug signing differs between machines unless handled separately and securely. N
 
 ## Next steps
 
-1. Confirm audible playback is normal with the user.
-2. Begin Phase 2 in a focused follow-up: player-first startup and large controls.
+1. Inspect the three-row player on the unlocked phone and test skips/configuration/startup.
+2. Refine layout from user feedback.
 3. Test the real Bluetooth controller early in Phase 3.
 4. Validate downloads/offline playback and native subscription import before stabilization.
 
@@ -71,3 +71,15 @@ Final link-compatibility build also passed in 18s (24 executed, 1200 up-to-date)
 The final free APK was installed as an update and launched successfully. Original subscription schemes are
 retained because the upstream URL normalizer depends on them; Android may offer an app chooser.
 Repository is committed on main; no UI or playback-behavior customizations have been made yet.
+
+## Phase 2 work
+
+User requested 60s back / 10s back / play-pause / 10s forward / 60s forward, with adjustable times.
+The latest layout uses three rows: two rewind targets, full-width play/pause, two forward targets.
+Artwork is compact and remains a play/pause target. Existing speed, skip-episode, chapters, and show notes remain available.
+Normal launcher entry requests expanded player when an episode is selected, without starting playback.
+Long-press each skip target to use the existing interval dialog (5, 10, 15, 20, 30, 45, 60 seconds).
+Big-skip settings are independent; small skips reuse upstream rewind/forward preferences (new forward default 10s).
+Existing explicitly saved small skip times are preserved and can be adjusted by holding the button.
+First implementation built both variants in 32s and installed as an update. Phone currently locked; visual and behavior
+checks pending unlock. No data reset or subscription import was performed.

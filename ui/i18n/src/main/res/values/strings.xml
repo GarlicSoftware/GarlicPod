@@ -1037,4 +1037,9 @@
     <string name="wearos_play_on_phone" tools:ignore="UnusedResources">Play on phone</string>
     <string name="wearos_browse_phone" tools:ignore="UnusedResources">Browse phone</string>
     <string name="wearos_open_on_phone" tools:ignore="UnusedResources">Open on phone</string>
+    <string name="garlicpod_big_rewind">Big rewind</string>
+    <string name="garlicpod_small_rewind">Small rewind</string>
+    <string name="garlicpod_small_forward">Small forward</string>
+    <string name="garlicpod_big_forward">Big forward</string>
+    <string name="garlicpod_skip_hint">Hold a skip button to change its seconds</string>
 </resources>

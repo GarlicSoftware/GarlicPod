@@ -556,7 +556,23 @@ public abstract class UserPreferences {
     }
 
     public static int getFastForwardSecs() {
-        return prefs.getInt(PREF_FAST_FORWARD_SECS, 30);
+        return prefs.getInt(PREF_FAST_FORWARD_SECS, 10);
+    }
+
+    public static int getBigRewindSecs() {
+        return prefs.getInt("garlicpodBigRewindSecs", 60);
+    }
+
+    public static int getBigFastForwardSecs() {
+        return prefs.getInt("garlicpodBigFastForwardSecs", 60);
+    }
+
+    public static void setBigRewindSecs(int secs) {
+        prefs.edit().putInt("garlicpodBigRewindSecs", secs).apply();
+    }
+
+    public static void setBigFastForwardSecs(int secs) {
+        prefs.edit().putInt("garlicpodBigFastForwardSecs", secs).apply();
     }
 
     public static int getRewindSecs() {
