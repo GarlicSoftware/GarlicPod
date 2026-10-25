@@ -23,8 +23,8 @@ Phase 1 only. Preserve existing player, subscriptions, downloads, and storage be
 - Audible output needs human confirmation. Bluetooth, downloads/offline playback, and full backup restore remain untested.
 - Original AntennaPod remains installed at version 3.12.3 with unchanged lastUpdateTime (2026-10-13). Its private data was not accessed.
 - Identity configured: com.garlicsoftware.garlicpod (debug suffix .debug), unique provider and launcher action, GarlicPod labels.
-- App-specific subscription scheme renamed garlicpod-subscribe; upstream-domain auto-verification disabled.
-- Removed inherited upstream backup service registration; native manual export/import retained.
+- Existing subscription schemes retained for parser compatibility; upstream-domain auto-verification disabled.
+- Removed inherited upstream backup API registration metadata; native manual export/import retained.
 - GitHub main branch exists, documentation is pushed, and main is the default branch.
 
 ## Decisions
@@ -38,11 +38,10 @@ Debug signing differs between machines unless handled separately and securely. N
 
 ## Next steps
 
-1. Finish stock build and resolve actual dependency or SDK failures.
-2. Set GarlicPod application identity, label, and provider; audit merged manifest and app-specific links.
-3. Build GarlicPod, install separately, and verify launch and ordinary podcast playback.
-4. Commit and push the documented baseline; set GitHub default branch to main.
-5. Only after phone validation begin Phase 2 playback UI changes.
+1. Confirm audible playback is normal with the user.
+2. Begin Phase 2 in a focused follow-up: player-first startup and large controls.
+3. Test the real Bluetooth controller early in Phase 3.
+4. Validate downloads/offline playback and native subscription import before stabilization.
 
 ## Later requirements
 

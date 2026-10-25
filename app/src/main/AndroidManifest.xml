@@ -226,7 +226,7 @@
                 <data android:scheme="itpc"/>
                 <data android:scheme="pcast"/>
                 <data android:scheme="feed"/>
-                <data android:scheme="garlicpod-subscribe"/>
+                <data android:scheme="antennapod-subscribe"/>
             </intent-filter>
 
             <intent-filter android:autoVerify="false">
