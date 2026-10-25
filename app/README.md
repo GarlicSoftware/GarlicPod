@@ -25,3 +25,7 @@ when the screen is recreated. Its active timer action cancels through the Media3
 SleepTimerPreferences automatic activation. A custom action view keeps the off action visible in portrait.
 The active action view displays remaining minutes:seconds from timer events, or remaining episodes for episode timers.
 The right-hand audio progress label always shows remaining / total time, using the existing playback-speed conversion.
+
+Launcher resources are overridden in app/src/main/res so both debug variants use GarlicPod branding instead of
+the library's upstream icon. Density-specific legacy PNGs support older Android; adaptive and monochrome layers
+support newer launchers. Approved source artwork is retained under assets/branding/garlicpod-aqua.

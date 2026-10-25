@@ -1,6 +1,9 @@
 # GarlicPod
 
 Personal Android podcast player derived from AntennaPod, maintained by GarlicSoftware.
+
+GarlicPod uses the approved garlic mascot with aqua headphones. Original artwork and export guidance are in
+assets/branding/garlicpod-aqua; launcher assets include legacy, adaptive, and monochrome versions.
 The first milestone preserves the upstream interface and playback functionality while installing independently.
 Large playback controls, player-first startup, Bluetooth skip remapping, and smart resume are later phases.
 

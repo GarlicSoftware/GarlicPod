@@ -165,3 +165,16 @@ No data reset or subscription import was performed.
 - Both debug variants passed :app:assembleDebug in 23 seconds; free debug update installed successfully.
 - Visually confirmed labels on the Galaxy S22 Ultra. No playback or skip settings changed by this update.
 - Car Bluetooth button behavior remains untested and needs validation with the actual car controls.
+
+## Aqua mascot app icon
+
+- User approved the playful garlic mascot with aqua headphones and authorized installation and an export set.
+- Preserved the approved 1254 x 1254 master and a generated transparent variant under assets/branding/garlicpod-aqua.
+- Added app-level legacy density icons and adaptive/monochrome layers, overriding upstream library launcher resources.
+- Exported originals, PNG sizes 64-1024, transparent PNGs, WebP, social JPG, web app icons, multi-size ICO,
+  native-resolution 300 dpi PNGs, Android resources, and a usage guide. Existing logo files were preserved.
+- Created a separate ZIP asset pack alongside the export folder. Master file hashes matched; 28 raster exports decoded
+  successfully and transparent corner alpha was zero. Inspected a circular mask preview for clipping.
+- Both debug variants passed :app:assembleDebug in 16 seconds; free debug update installed successfully.
+- Verified the new GarlicPod Debug icon in the Galaxy S22 Ultra app drawer and the existing episode shortcut badge.
+- Themed monochrome rendering and legacy Android launchers were not device-tested.
