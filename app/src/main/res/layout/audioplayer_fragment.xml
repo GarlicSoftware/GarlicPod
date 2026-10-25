@@ -101,7 +101,7 @@
                     android:layout_marginLeft="16dp"
                     android:text="@string/position_default_label"
                     android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="@dimen/text_size_micro" />
+                    android:textSize="18sp" />
                 <de.danoeh.antennapod.ui.screen.playback.audio.NoRelayoutTextView
                     android:id="@+id/txtvLength"
                     android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:text="@string/position_default_label"
                     android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="@dimen/text_size_micro" />
+                    android:textSize="18sp" />
             </RelativeLayout>
             <LinearLayout
                 android:id="@+id/player_control"

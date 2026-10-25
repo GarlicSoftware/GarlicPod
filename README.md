@@ -58,7 +58,8 @@ source when distributing APKs. Modifications and validation are tracked in PROJE
 
 Normal launcher startup opens the full player when an episode is selected, without autoplay.
 The three large control rows are play/pause, 60-second rewind/forward, then 10-second rewind/forward.
-Hold any skip button to choose its seconds. The progress track targets 5.5 mm with a larger handle and touch area.
+Hold any skip button to choose its seconds, including 80, 100, and 120 seconds.
+The progress track targets 2.2 mm with a larger handle and touch area.
 Big rewind and big forward have independent saved settings. Small skips reuse AntennaPod's original interval settings.
 Artwork also toggles play/pause. Player replaces Home in navigation; the old dashboard routes open playback.
 Use the bottom navigation to manage podcasts. With no selected episode, Subscriptions opens.

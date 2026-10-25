@@ -113,6 +113,9 @@
         <item>30</item>
         <item>45</item>
         <item>60</item>
+        <item>80</item>
+        <item>100</item>
+        <item>120</item>
     </integer-array>
 
     <string-array name="episode_cache_size_entries">

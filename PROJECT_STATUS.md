@@ -133,3 +133,12 @@ No data reset or subscription import was performed.
 - Countdown decreased from 00:14:53 to 00:14:49 during playback and held while paused, matching service behavior.
 - Verified tapping the countdown cancels it. Left playback paused and the timer off.
 - Episode-mode display, landscape, and Bluetooth were not device-tested in this change.
+
+## Longer skip options and slimmer progress track
+
+- Added 80, 100, and 120 seconds to the shared skip interval options.
+- Reduced the progress track from nominal 5.5 mm to 2.2 mm, a 60 percent reduction, retaining the touch area and thumb.
+- Enlarged elapsed and duration/remaining time labels to 18 sp.
+- Final :app:assembleDebug passed for both variants in 13 seconds after an earlier 18-second build.
+- Installed the final free debug APK. Visually verified the slimmer track, larger time labels, and all three new options
+  in the Big forward dialog on the Galaxy S22 Ultra. Dismissed without changing the user's current skip settings.

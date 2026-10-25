@@ -44,7 +44,7 @@ public class ChapterSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
         setBackground(null); // Removes the thumb shadow
         dividerPos = null;
         density = context.getResources().getDisplayMetrics().density;
-        halfTrackHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 5.5f,
+        halfTrackHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 2.2f,
                 context.getResources().getDisplayMetrics()) / 2;
 
         paintBackground.setColor(ThemeUtils.getColorFromAttr(getContext(), R.attr.colorSurfaceVariant));
