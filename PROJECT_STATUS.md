@@ -109,3 +109,16 @@ No data reset or subscription import was performed.
 - Installed the free debug update and visually checked the three rows and thicker slider on the Galaxy S22 Ultra.
 - Verified cold launch opens playback, Subscriptions remains accessible, and Player returns to full playback.
 - Playback remained paused at 01:15:43 during navigation checks. Physical millimeter size was not measured with a ruler.
+
+## Toolbar and sleep timer clarity
+
+- Removed the down arrow and skip-interval instruction from the audio player.
+- Moved playback speed to an icon beside Favorite, retaining the existing speed dialog.
+- Off timer uses a grey icon; active timer uses an explicit blue Turn off timer action.
+- Direct off cancels through the Media3 command and disables automatic timer activation.
+- Audio player consumes sticky timer events to restore the visible state when recreated.
+- Both debug variants passed :app:assembleDebug in 28 seconds; final action-view revision passed in 16 seconds.
+- Installed the final free debug APK. On Galaxy S22 Ultra, checked the cleaned layout, speed dialog,
+  timer activation, visible off action, and return to the grey icon after direct cancellation.
+- Timer setup requires a running playback service, as upstream does. Started playback briefly to exercise setup.
+- Left the episode paused at 01:17:18 with timer off. Landscape, video, and Bluetooth were not tested in this change.

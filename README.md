@@ -61,4 +61,6 @@ The three large control rows are play/pause, 60-second rewind/forward, then 10-s
 Hold any skip button to choose its seconds. The progress track targets 5.5 mm with a larger handle and touch area.
 Big rewind and big forward have independent saved settings. Small skips reuse AntennaPod's original interval settings.
 Artwork also toggles play/pause. Player replaces Home in navigation; the old dashboard routes open playback.
-Collapse the player with the down arrow to manage podcasts normally. With no selected episode, Subscriptions opens.
+Use the bottom navigation to manage podcasts. With no selected episode, Subscriptions opens.
+Playback speed is an icon beside Favorite. The sleep icon is grey when off; an active timer shows a
+Turn off timer button that cancels the timer and disables automatic activation.

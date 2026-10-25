@@ -1,6 +1,7 @@
 package de.danoeh.antennapod.ui.screen.playback.audio;
 
 import android.os.Bundle;
+import android.content.res.ColorStateList;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,6 +29,9 @@ import de.danoeh.antennapod.model.feed.Feed;
 import de.danoeh.antennapod.playback.service.PlaybackController;
 import de.danoeh.antennapod.playback.service.PlaybackService;
 import de.danoeh.antennapod.playback.service.PlaybackServiceStarter;
+import de.danoeh.antennapod.playback.service.internal.MediaLibrarySessionCallback;
+import de.danoeh.antennapod.storage.preferences.SleepTimerPreferences;
+import de.danoeh.antennapod.ui.common.ThemeUtils;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.database.DBWriter;
 import de.danoeh.antennapod.storage.preferences.PlaybackPreferences;
@@ -46,7 +50,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +66,6 @@ import de.danoeh.antennapod.event.playback.BufferUpdateEvent;
 import de.danoeh.antennapod.event.playback.PlaybackPositionEvent;
 import de.danoeh.antennapod.event.playback.PlaybackServiceEvent;
 import de.danoeh.antennapod.event.playback.SleepTimerUpdatedEvent;
-import de.danoeh.antennapod.event.playback.SpeedChangedEvent;
 import de.danoeh.antennapod.ui.episodeslist.FeedItemMenuHandler;
 import de.danoeh.antennapod.model.feed.Chapter;
 import de.danoeh.antennapod.model.feed.FeedItem;
@@ -86,7 +88,6 @@ public class AudioPlayerFragment extends Fragment implements
     public static final int POS_DESCRIPTION = 1;
     private static final int NUM_CONTENT_FRAGMENTS = 2;
 
-    private TextView txtvPlaybackSpeed;
     private ViewPager2 pager;
     private TextView txtvPosition;
     private TextView txtvLength;
@@ -117,17 +118,23 @@ public class AudioPlayerFragment extends Fragment implements
         root.setOnTouchListener((v, event) -> true); // Avoid clicks going through player to fragments below
         toolbar = root.findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        toolbar.setNavigationOnClickListener(v ->
-                ((MainActivity) getActivity()).getBottomSheet().setState(BottomSheetBehavior.STATE_COLLAPSED));
+        toolbar.setNavigationIcon(null);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.inflateMenu(R.menu.mediaplayer);
+        toolbar.getMenu().findItem(R.id.playback_speed).setVisible(true).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        toolbar.getMenu().findItem(R.id.set_sleeptimer_item).setTitle(R.string.garlicpod_sleep_timer_off);
+        toolbar.getMenu().findItem(R.id.disable_sleeptimer_item)
+                .setTitle(R.string.garlicpod_sleep_timer_turn_off)
+                .setActionView(R.layout.garlicpod_sleep_timer_off);
+        toolbar.getMenu().findItem(R.id.disable_sleeptimer_item).getActionView().setOnClickListener(
+                v -> onMenuItemClick(toolbar.getMenu().findItem(R.id.disable_sleeptimer_item)));
+        updateSleepTimerMenu(false);
 
         ExternalPlayerFragment externalPlayerFragment = new ExternalPlayerFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.playerFragment, externalPlayerFragment, ExternalPlayerFragment.TAG)
                 .commit();
 
-        txtvPlaybackSpeed = root.findViewById(R.id.txtvPlaybackSpeed);
         sbPosition = root.findViewById(R.id.sbPosition);
         txtvPosition = root.findViewById(R.id.txtvPosition);
         txtvLength = root.findViewById(R.id.txtvLength);
@@ -143,8 +150,6 @@ public class AudioPlayerFragment extends Fragment implements
 
         setupLengthTextView();
         setupControlButtons(root);
-        final ImageButton butPlaybackSpeed = root.findViewById(R.id.butPlaybackSpeed);
-        butPlaybackSpeed.setOnClickListener(v -> new VariableSpeedDialog().show(getChildFragmentManager(), null));
         sbPosition.setOnSeekBarChangeListener(this);
 
         pager = root.findViewById(R.id.pager);
@@ -330,12 +335,6 @@ public class AudioPlayerFragment extends Fragment implements
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updatePlaybackSpeedButton(SpeedChangedEvent event) {
-        String speedStr = new DecimalFormat("0.00").format(event.getNewSpeed());
-        txtvPlaybackSpeed.setText(speedStr);
-    }
-
     private void loadMediaInfo(boolean includingChapters) {
         if (disposable != null) {
             disposable.dispose();
@@ -367,7 +366,6 @@ public class AudioPlayerFragment extends Fragment implements
             return;
         }
         updatePosition(new PlaybackPositionEvent(currentMedia.getPosition(), currentMedia.getDuration()));
-        updatePlaybackSpeedButton(new SpeedChangedEvent(PlaybackSpeedUtils.getCurrentPlaybackSpeed(currentMedia)));
         setChapterDividers();
         setupOptionsMenu();
         boolean isPlaying = PlaybackService.isRunning
@@ -380,15 +378,24 @@ public class AudioPlayerFragment extends Fragment implements
         loadMediaInfo(false);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     @SuppressWarnings("unused")
     public void sleepTimerUpdate(SleepTimerUpdatedEvent event) {
         boolean timerActive = !event.isCancelled() && !event.isOver();
-        toolbar.getMenu().findItem(R.id.set_sleeptimer_item).setVisible(!timerActive);
-        toolbar.getMenu().findItem(R.id.disable_sleeptimer_item).setVisible(timerActive);
+        updateSleepTimerMenu(timerActive);
         if (event.isCancelled() || event.wasJustEnabled() || event.isOver()) {
             AudioPlayerFragment.this.loadMediaInfo(false);
         }
+    }
+
+    private void updateSleepTimerMenu(boolean timerActive) {
+        toolbar.getMenu().findItem(R.id.set_sleeptimer_item).setVisible(!timerActive);
+        toolbar.getMenu().findItem(R.id.disable_sleeptimer_item).setVisible(timerActive);
+        toolbar.getMenu().findItem(R.id.set_sleeptimer_item).setIconTintList(ColorStateList.valueOf(
+                ThemeUtils.getColorFromAttr(requireContext(), android.R.attr.textColorSecondary)));
+        toolbar.getMenu().findItem(R.id.set_sleeptimer_item).getIcon().setAlpha(100);
+        toolbar.getMenu().findItem(R.id.disable_sleeptimer_item).setIconTintList(ColorStateList.valueOf(
+                ThemeUtils.getColorFromAttr(requireContext(), R.attr.colorPrimary)));
     }
 
     @Override
@@ -574,7 +581,15 @@ public class AudioPlayerFragment extends Fragment implements
         }
 
         final int itemId = item.getItemId();
-        if (itemId == R.id.disable_sleeptimer_item || itemId == R.id.set_sleeptimer_item) {
+        if (itemId == R.id.disable_sleeptimer_item) {
+            SleepTimerPreferences.setAutoEnable(false);
+            PlaybackController.bindToMedia3Service(requireContext(), controller -> controller.sendCustomCommand(
+                    MediaLibrarySessionCallback.SESSION_COMMAND_DISABLE_SLEEP_TIMER, Bundle.EMPTY));
+            return true;
+        } else if (itemId == R.id.playback_speed) {
+            new VariableSpeedDialog().show(getChildFragmentManager(), null);
+            return true;
+        } else if (itemId == R.id.set_sleeptimer_item) {
             new SleepTimerDialog().show(getChildFragmentManager(), "SleepTimerDialog");
             return true;
         } else if (itemId == R.id.transcript_item) {

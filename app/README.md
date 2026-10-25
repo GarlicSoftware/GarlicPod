@@ -19,3 +19,7 @@ The Home navigation identifier now represents Player and expands the playback sh
 fall back to Subscriptions when no episode is selected; MainActivity does not instantiate the Home dashboard.
 Control rows are play/pause, big rewind/forward, then small rewind/forward. ChapterSeekBar draws a nominal
 5.5 mm track using display metrics; its layout provides a 64 dp touch area and a 40 dp thumb.
+
+AudioPlayerFragment consumes sticky SleepTimerUpdatedEvent state so the toolbar reflects an existing timer
+when the screen is recreated. Its active timer action cancels through the Media3 session command and disables
+SleepTimerPreferences automatic activation. A custom action view keeps the off action visible in portrait.
