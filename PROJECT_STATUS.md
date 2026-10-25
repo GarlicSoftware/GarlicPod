@@ -150,3 +150,11 @@ No data reset or subscription import was performed.
 - Both debug variants passed :app:assembleDebug in 36 seconds. Installed free debug update.
 - Verified on Galaxy S22 Ultra: elapsed 01:19:11 and right label 00:10:45 / 01:29:56, with no overlap.
 - Left the episode paused. Landscape was not tested for this label change.
+
+## Compact sleep countdown
+
+- Sleep countdown now shows total minutes and two-digit seconds, with no hours or visible instruction text.
+- Retained tap-to-cancel and its accessible description; other playback time labels retain their format.
+- Both debug variants passed :app:assembleDebug in 12 seconds; final text-only revision passed in 11 seconds.
+- Installed final free debug update and visually verified 14:52 alone in the toolbar on Galaxy S22 Ultra.
+- Left playback paused and tapped the countdown to turn the timer off after checking.

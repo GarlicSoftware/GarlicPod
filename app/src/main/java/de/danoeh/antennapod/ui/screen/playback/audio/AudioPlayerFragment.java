@@ -53,6 +53,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import de.danoeh.antennapod.BuildConfig;
 import de.danoeh.antennapod.R;
@@ -362,9 +363,10 @@ public class AudioPlayerFragment extends Fragment implements
             String remaining = SleepTimerPreferences.getSleepTimerType() == SleepTimerType.EPISODES
                     ? getResources().getQuantityString(R.plurals.num_episodes,
                             (int) event.getDisplayTimeLeft(), (int) event.getDisplayTimeLeft())
-                    : Converter.getDurationStringLong((int) Math.min(Integer.MAX_VALUE, event.getMillisTimeLeft()));
+                    : String.format(Locale.getDefault(), "%d:%02d",
+                            event.getMillisTimeLeft() / 60000, event.getMillisTimeLeft() / 1000 % 60);
             TextView countdown = (TextView) toolbar.getMenu().findItem(R.id.disable_sleeptimer_item).getActionView();
-            countdown.setText(getString(R.string.garlicpod_sleep_countdown, remaining));
+            countdown.setText(remaining);
             countdown.setContentDescription(getString(R.string.garlicpod_sleep_countdown, remaining));
         }
         if (event.isCancelled() || event.wasJustEnabled() || event.isOver()) {
