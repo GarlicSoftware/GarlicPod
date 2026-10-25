@@ -3,6 +3,8 @@ package de.danoeh.antennapod.playback.service.internal;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 import androidx.annotation.NonNull;
@@ -46,6 +48,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLibrarySession.Callback {
     private static final String TAG = "M3SessionCallback";
@@ -102,6 +105,60 @@ public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLib
     }
 
     private final Context context;
+    private final Handler hardwareSkipHandler = new Handler(Looper.getMainLooper());
+    private Runnable pendingHardwareSkip;
+    private int pendingHardwareKey;
+    private MediaSession.ControllerInfo pendingHardwareController;
+    private MediaItem pendingHardwareItem;
+
+    public void cancelPendingHardwareSkip() {
+        if (pendingHardwareSkip != null) {
+            hardwareSkipHandler.removeCallbacks(pendingHardwareSkip);
+        }
+        pendingHardwareSkip = null;
+        pendingHardwareController = null;
+        pendingHardwareItem = null;
+    }
+
+    @UnstableApi
+    private void handleHardwareSkip(MediaSession session, MediaSession.ControllerInfo controller, int keyCode) {
+        Player player = session.getPlayer();
+        MediaItem item = player.getCurrentMediaItem();
+        if (pendingHardwareSkip != null && pendingHardwareKey == keyCode
+                && Objects.equals(pendingHardwareController, controller)
+                && Objects.equals(pendingHardwareItem, item)) {
+            cancelPendingHardwareSkip();
+            long delta = keyCode == KeyEvent.KEYCODE_MEDIA_NEXT
+                    ? UserPreferences.getBigFastForwardSecs() * 1000L : -UserPreferences.getBigRewindSecs() * 1000L;
+            long target = Math.max(0, player.getCurrentPosition() + delta);
+            if (player.getDuration() > 0) {
+                target = Math.min(target, player.getDuration());
+            }
+            player.seekTo(target);
+            Log.d(TAG, "Hardware double press: " + KeyEvent.keyCodeToString(keyCode));
+            return;
+        }
+        if (pendingHardwareSkip != null) {
+            Runnable previous = pendingHardwareSkip;
+            cancelPendingHardwareSkip();
+            previous.run();
+        }
+        pendingHardwareKey = keyCode;
+        pendingHardwareController = controller;
+        pendingHardwareItem = item;
+        pendingHardwareSkip = () -> {
+            cancelPendingHardwareSkip();
+            if (Objects.equals(item, player.getCurrentMediaItem())) {
+                if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+                    player.seekToNext();
+                } else {
+                    player.seekToPrevious();
+                }
+                Log.d(TAG, "Hardware single press: " + KeyEvent.keyCodeToString(keyCode));
+            }
+        };
+        hardwareSkipHandler.postDelayed(pendingHardwareSkip, 400);
+    }
 
     public MediaLibrarySessionCallback(Context context) {
         this.context = context;
@@ -204,10 +261,22 @@ public class MediaLibrarySessionCallback implements MediaLibraryService.MediaLib
     public boolean onMediaButtonEvent(@NonNull MediaSession session,
             @NonNull MediaSession.ControllerInfo controllerInfo, @NonNull Intent intent) {
         KeyEvent keyEvent = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+        boolean fromWidget = MediaButtonStarter.MEDIA_BUTTON_SOURCE_WIDGET.equals(
+                intent.getStringExtra(MediaButtonStarter.EXTRA_MEDIA_BUTTON_SOURCE));
+        if (keyEvent != null && !fromWidget && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_NEXT
+                || keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PREVIOUS)) {
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getRepeatCount() == 0) {
+                handleHardwareSkip(session, controllerInfo, keyEvent.getKeyCode());
+            }
+            return true;
+        }
         if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN
                 && keyEvent.getRepeatCount() == 0) {
-            boolean fromWidget = MediaButtonStarter.MEDIA_BUTTON_SOURCE_WIDGET.equals(
-                    intent.getStringExtra(MediaButtonStarter.EXTRA_MEDIA_BUTTON_SOURCE));
+            if (pendingHardwareSkip != null) {
+                Runnable previous = pendingHardwareSkip;
+                cancelPendingHardwareSkip();
+                previous.run();
+            }
             int keyCode = keyEvent.getKeyCode();
             if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
                 session.getPlayer().seekForward();

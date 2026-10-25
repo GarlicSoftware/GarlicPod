@@ -195,3 +195,10 @@ No data reset or subscription import was performed.
 - Direct volume-key remapping in the media-session callback cannot handle this car's volume controls. Inferring skips from volume changes would also respond to other volume controls and miss unchanged min/max values.
 - No playback mappings or installed APKs changed in this diagnostic session. A separate gesture, such as double-press next/previous, remains a possible design to discuss.
 
+## Double-press hardware skips - October 25, 2026
+
+- Added media-session handling for next/previous key presses: single press uses the existing small-skip mapping after a 400 ms double-press window; a matching second press uses the configured big forward/rewind interval without an extra small skip.
+- Key-up and repeat events are consumed. Opposite directions remain separate actions, widget next-episode remains immediate, pending skips are cancelled on service shutdown and discarded on episode changes. Direct controller commands keep their existing mappings.
+- Nine MediaLibrarySessionCallback tests passed, including six new gesture regression tests. :app:assembleDebug passed for free and play in 2 minutes 58 seconds.
+- Confirmed the free APK application ID, installed it with data preserved, and reopened GarlicPod successfully.
+- Owner reported the actual car single/double-press test was perfect. Device logs also confirmed single and double previous-key classification. Volume behavior is unchanged.

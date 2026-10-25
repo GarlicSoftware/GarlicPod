@@ -11,3 +11,9 @@ The `MediaController` exposes the standard Media3 `Player` interface: `seekTo(po
 `play()`, `pause()`, `getCurrentPosition()`, `getPlaybackParameters()`, etc.
 Each call to `bindToMedia3Service()` creates a short-lived connection that is released after the
 callback returns.
+
+Hardware next/previous key events are handled in `MediaLibrarySessionCallback`: one press waits 400 ms
+before using the existing hardware action mapping, and a second press from the same controller on the
+same episode uses the configured big skip instead. Key releases and repeats are consumed without seeking.
+Widget next-episode commands bypass this gesture. Pending gestures are cancelled when the service stops
+and discarded if the episode changes before execution. Direct controller commands retain their existing mapping.

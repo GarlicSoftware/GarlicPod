@@ -470,6 +470,7 @@ public class Media3PlaybackService extends MediaLibraryService {
     @UnstableApi
     @Override
     public void onDestroy() {
+        sessionCallback.cancelPendingHardwareSkip();
         PlaybackService.isRunning = false;
         cancelPositionObserver();
         if (sleepTimer != null) {
