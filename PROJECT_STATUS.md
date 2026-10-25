@@ -66,3 +66,8 @@ FileProvider: com.garlicsoftware.garlicpod.debug.provider; startup provider uses
 Merged manifest and APK metadata inspected before installation. Remaining compiler/resource warnings also occur upstream.
 Unit tests and lint were not run for the identity-only change; device launch/subscription/stream/pause checks were used.
 The first attempted BBC test feed returned HTTP 404; switched to a verified live Simplecast feed.
+
+Final link-compatibility build also passed in 18s (24 executed, 1200 up-to-date).
+The final free APK was installed as an update and launched successfully. Original subscription schemes are
+retained because the upstream URL normalizer depends on them; Android may offer an app chooser.
+Repository is committed on main; no UI or playback-behavior customizations have been made yet.
