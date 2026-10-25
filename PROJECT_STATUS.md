@@ -185,3 +185,13 @@ No data reset or subscription import was performed.
 - Kept the installed application ID and update identity unchanged to preserve existing data.
 - Both debug variants passed :app:assembleDebug in 16 seconds; free debug update installed successfully.
 - Verified GarlicPod text and accessible label in the Galaxy S22 Ultra app drawer.
+
+## Car Bluetooth button capture - October 25, 2026
+
+- Tested with the actual car connected over Bluetooth and the phone attached by USB.
+- Short next/previous presses sent KEYCODE_MEDIA_NEXT/PREVIOUS ACTION_DOWN and ACTION_UP to GarlicPod's active media session. The user confirmed these perform the small skips.
+- The requested two-second holds produced no additional media key or AVRCP pass-through events during the live capture; the user confirmed no playback response.
+- Car volume controls sent AVRCP absolute-volume notifications rather than app media-button events. Captured Bluetooth volume 120 translated to device volume 141; a notification at volume 127 was ignored as unchanged.
+- Direct volume-key remapping in the media-session callback cannot handle this car's volume controls. Inferring skips from volume changes would also respond to other volume controls and miss unchanged min/max values.
+- No playback mappings or installed APKs changed in this diagnostic session. A separate gesture, such as double-press next/previous, remains a possible design to discuss.
+
