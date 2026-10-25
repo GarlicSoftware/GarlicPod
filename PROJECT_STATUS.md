@@ -158,3 +158,10 @@ No data reset or subscription import was performed.
 - Both debug variants passed :app:assembleDebug in 12 seconds; final text-only revision passed in 11 seconds.
 - Installed final free debug update and visually verified 14:52 alone in the toolbar on Galaxy S22 Ultra.
 - Left playback paused and tapped the countdown to turn the timer off after checking.
+
+## Skip button capitalization
+
+- Capitalized both words on all four skip buttons: Big Rewind, Big Forward, Small Rewind, Small Forward.
+- Both debug variants passed :app:assembleDebug in 23 seconds; free debug update installed successfully.
+- Visually confirmed labels on the Galaxy S22 Ultra. No playback or skip settings changed by this update.
+- Car Bluetooth button behavior remains untested and needs validation with the actual car controls.
