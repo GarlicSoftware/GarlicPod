@@ -210,3 +210,11 @@ No data reset or subscription import was performed.
 - :app:assembleDebug passed for free and play in 18 seconds. Verified free APK identity and installed the update with data preserved.
 - Galaxy S22 Ultra visual checks passed: cold MainActivity start without extras opened the full player; explicit feed navigation opened the feed; Home then a HOT launcher task restoration reopened the full player.
 - Episode remained paused at 00:03:40 throughout. Left the full player visible. No autoplay or playback preferences changed.
+
+## Existing desktop podcast shortcut routing - October 25, 2026
+
+- Owner reproduced the remaining startup issue by swiping the app away and opening the pinned desktop podcast link. Captured ACTION_MAIN, NEW_TASK/CLEAR_TASK and a feed navigation extra, matching SelectSubscriptionActivity's shortcut format.
+- The prior restoration change covered normal launches and task restoration, but deliberately preserved feed navigation and therefore missed this pinned-shortcut route.
+- MainActivity now normalizes existing ACTION_MAIN podcast shortcuts to the player when media is selected. Without selected media the feed fallback remains; ordinary in-app feed navigation uses its existing route.
+- :app:assembleDebug passed for both variants in 13 seconds. Verified the free APK identity and installed it with data preserved.
+- Force-stopped GarlicPod, returned to Nova's home screen, and tapped the actual Tell Em Steve-Dave shortcut. Visual verification showed the full player; the captured launch matched the owner's previously failing shortcut. Episode remained paused at 00:03:40. Left the player open.

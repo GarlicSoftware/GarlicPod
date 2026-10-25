@@ -777,6 +777,12 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     private void handleNavIntent() {
         Log.d(TAG, "handleNavIntent()");
         Intent intent = getIntent();
+        // Existing pinned podcast shortcuts launch MAIN with a feed extra instead of SplashActivity.
+        if (Intent.ACTION_MAIN.equals(intent.getAction()) && intent.hasExtra(MainActivityStarter.EXTRA_FEED_ID)
+                && PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0) {
+            intent.removeExtra(MainActivityStarter.EXTRA_FEED_ID);
+            intent.putExtra(MainActivityStarter.EXTRA_OPEN_PLAYER, true);
+        }
         if (intent.hasExtra(MainActivityStarter.EXTRA_EPISODE_ID)) {
             long episodeId = intent.getLongExtra(MainActivityStarter.EXTRA_EPISODE_ID, 0);
             if (episodeId <= 0) {

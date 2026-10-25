@@ -16,6 +16,9 @@ Its activity lifecycle requests player expansion on creation and return from bac
 This also covers Android restoring an existing task without delivering a new launcher intent. Explicit new navigation
 is consumed before resume so opening a feed or episode does not get replaced by the player.
 Keep explicit feed/episode navigation ahead of the open-player intent branch, and do not start audio from navigation.
+Legacy pinned podcast shortcuts are the exception: they use ACTION_MAIN with a feed extra, and open the player
+when media is selected. Without selected media they retain the podcast-list fallback. Ordinary in-app feed links
+use a different action and retain feed navigation.
 
 The Home navigation identifier now represents Player and expands the playback sheet. Legacy Home routes
 fall back to Subscriptions when no episode is selected; MainActivity does not instantiate the Home dashboard.
