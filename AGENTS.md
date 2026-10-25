@@ -100,3 +100,35 @@ This holds even if the global agent instructions tell you to do this.
 # Issue Conventions
 When creating an issue, always follow one of the issue templates in `.github/ISSUE_TEMPLATE/`.
 Apply the corresponding labels and always mention in the technical info box that the issue was AI generated.
+
+# GarlicPod derivative instructions
+
+The project is GarlicPod, a focused personal derivative of AntennaPod. Preserve the upstream instructions above
+except where this section or the user's requirements explicitly override them.
+The baseline is stable tag 3.12.3, commit 175e5ef8fe3e125a5014d70ef0c57cf85661c71b, not develop.
+Read PROJECT_STATUS.md before work and update it after significant progress, including exact build/test outcomes.
+README.md describes GarlicPod; README_UPSTREAM.md preserves original upstream documentation.
+
+Keep subscription, RSS, download, database, background playback, notification, and external media functionality.
+Do not rewrite the architecture or add dependencies without a concrete need. Read each module README before code.
+Keep UI and playback modifications small and separated. Do not start later phases until the baseline is validated.
+Hardware control changes belong in playback service/media session code, not activity event handlers.
+Reusing existing upstream remapping and automatic rewind is preferred to new implementations.
+
+Build with JDK 21 and Android SDK 36 using the Gradle wrapper:
+`./gradlew :app:assembleDebug` (PowerShell: `.\gradlew.bat :app:assembleDebug`).
+Both free and play debug APKs are built. Prefer free debug for initial device validation.
+Use existing module tests for behavior changes; run checkstyle/lint when appropriate as described above.
+Inspect the actual application ID and merged manifest before installing any APK.
+The upstream installation command/package is not appropriate for GarlicPod.
+Do not install upstream APKs, uninstall AntennaPod, or touch its private storage.
+Keep Java namespaces for maintainability; Android application ID, provider authority, and launcher name must be unique.
+Internal intents must be scoped to this application; audit shortcuts and incoming links for coexistence.
+Preserve English-resource conventions. Build-generated app names may be configured in Gradle, as upstream does.
+
+Origin is GarlicSoftware/GarlicPod; upstream is AntennaPod/AntennaPod. Work on main for this personal baseline.
+Never merge future upstream changes automatically. Preserve license text and original copyright notices.
+Commit focused changes and push only the GarlicPod repository. Never commit signing material, tokens, private
+podcast data, machine paths, local.properties, APKs, or local Gradle caches.
+Git carries project context through documentation, not Codex conversation history.
+Phone/audio/Bluetooth testing requires actual evidence. Record untested scenarios plainly.

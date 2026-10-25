@@ -1,44 +1,55 @@
-# AntennaPod
+# GarlicPod
 
-[![GitHub check runs](https://img.shields.io/github/check-runs/AntennaPod/AntennaPod/develop)](https://github.com/AntennaPod/AntennaPod/actions/workflows/checks.yml?query=branch%3Adevelop)
-[![License: GPL v3](https://img.shields.io/github/license/AntennaPod/AntennaPod)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub Release](https://img.shields.io/github/v/release/AntennaPod/AntennaPod)](https://github.com/AntennaPod/AntennaPod/releases)
-[![https://img.shields.io/github/commits-since/AntennaPod/AntennaPod/latest/develop](https://img.shields.io/github/commits-since/AntennaPod/AntennaPod/latest/develop)](https://github.com/AntennaPod/AntennaPod/commits/develop/)
-[![Translations on Weblate](https://hosted.weblate.org/widget/antennapod/app/svg-badge.svg?native=1)](https://hosted.weblate.org/engage/antennapod/)
-[![Good first issue](https://img.shields.io/github/issues-search?query=repo%3AAntennaPod%2FAntennaPod%20is%3Aopen%20is%3Aissue%20label%3A%22Good%20first%20issue%22&label=Good%20first%20issue&labelColor=grey&color=%235F1984)](https://github.com/AntennaPod/AntennaPod/labels/Good%20first%20issue)
+Personal Android podcast player derived from AntennaPod, maintained by GarlicSoftware.
+The first milestone preserves the upstream interface and playback functionality while installing independently.
+Large playback controls, player-first startup, Bluetooth skip remapping, and smart resume are later phases.
 
-This is the official repository of AntennaPod, the easy-to-use, flexible and open-source podcast manager for Android.
+## Upstream baseline
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
-      alt="Get it on Google Play"
-      height="70">](https://play.google.com/store/apps/details?id=de.danoeh.antennapod)
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-      alt="Get it on F-Droid"
-      height="70">](https://f-droid.org/app/de.danoeh.antennapod)
+- Repository: https://github.com/AntennaPod/AntennaPod
+- Stable tag: `3.12.3`
+- Commit: `175e5ef8fe3e125a5014d70ef0c57cf85661c71b`
+- License: GPL-3.0; see LICENSE and retained source copyright notices.
+- Upstream README is preserved in README_UPSTREAM.md.
+- No automatic upstream merges. Review significant fixes individually.
 
-<img src="https://raw.githubusercontent.com/AntennaPod/StoreMetadata/main/listings/en-US/graphics/phone-screenshots/00.png" alt="Screenshot 0" height="200"> <img src="https://raw.githubusercontent.com/AntennaPod/StoreMetadata/main/listings/en-US/graphics/phone-screenshots/01.png" alt="Screenshot 1" height="200"> <img src="https://raw.githubusercontent.com/AntennaPod/StoreMetadata/main/listings/en-US/graphics/phone-screenshots/02.png" alt="Screenshot 2" height="200"> <img src="https://raw.githubusercontent.com/AntennaPod/StoreMetadata/main/listings/en-US/graphics/phone-screenshots/03.png" alt="Screenshot 3" height="200"> <img src="https://raw.githubusercontent.com/AntennaPod/StoreMetadata/main/listings/en-US/graphics/phone-screenshots/04.png" alt="Screenshot 4" height="200"> <img src="https://raw.githubusercontent.com/AntennaPod/StoreMetadata/main/listings/en-US/graphics/phone-screenshots/05.png" alt="Screenshot 5" height="200">
+## Build
 
+Install JDK 21 and Android SDK platform 36 with build tools 35.0.0.
+Set JAVA_HOME to JDK 21 and ANDROID_HOME to your SDK directory, or configure SDK location in ignored local.properties.
+Use the checked-in Gradle 8.13 wrapper, not a system Gradle installation.
 
-## Feedback
-You can use the [AntennaPod Forum](https://forum.antennapod.org/) for discussions about the app or just podcasting in general.
+```powershell
+.\gradlew.bat :app:assembleDebug
+```
 
-Bug reports and feature requests can be submitted [here](https://github.com/AntennaPod/AntennaPod/issues) (please read the [instructions](https://github.com/AntennaPod/AntennaPod/blob/develop/CONTRIBUTING.md) on how to report a bug and how to submit a feature request first!).
+Outputs are under `app/build/outputs/apk/`. Prefer the free debug variant for the first phone test.
+Do not install the unmodified upstream APK on the phone.
+See PROJECT_STATUS.md for the actual build and device validation state.
 
-We also hold regular community calls to discuss anything AntennaPod-related. [Come join the next call](https://forum.antennapod.org/t/monthly-community-call/1869)!
+## Two-computer workflow
 
-## Help to test AntennaPod
-AntennaPod has many users and we don't want them to run into trouble when we add a new feature. It's important that we have a significant group test our app, so that we know all possible combinations of phones, Android versions and use cases work as expected. Check out our wiki on how to join our [Beta testing program](https://antennapod.org/documentation/general/beta)! If a bug is reported during the beta period, chances are high that it will be fixed before the upcoming stable version. If it is reported later, fixing might take another full beta cycle. So definitely let us know if something is not right.
+GitHub is the source of truth: https://github.com/GarlicSoftware/GarlicPod
 
-## License
+```powershell
+git clone https://github.com/GarlicSoftware/GarlicPod.git
+```
 
-AntennaPod is licensed under the GNU General Public License (GPL-3.0). You can find the license text in the [LICENSE](https://github.com/AntennaPod/AntennaPod/blob/develop/LICENSE) file.
+Before editing, read AGENTS.md and PROJECT_STATUS.md and inspect `git status`.
+Before switching computers, commit focused changes, update PROJECT_STATUS.md, and push main.
+On the other computer, preserve local edits, then fetch origin and merge origin/main with --ff-only.
+Git transfers source and project documentation, not Codex conversation history or local SDK configuration.
 
-## Translating AntennaPod
+Debug signing keys are local and must never be committed. Different laptop keys cannot update the same installed APK.
+Keep one laptop responsible for installed builds initially. A future release key needs a separate secure transfer plan.
+Never uninstall an existing app to work around a signing mismatch without backing up its data and obtaining permission.
 
-If you want to translate AntennaPod into another language, you can visit our [Weblate page](https://hosted.weblate.org/projects/antennapod/).
+## Data transfer and attribution
 
+Use AntennaPod's native OPML export/import to transfer subscriptions first. OPML does not transfer playback positions,
+settings, or downloaded audio. Upstream also supports full database backup, but cross-application restore has not been
+validated. Do not copy private app databases directly.
 
-## Building AntennaPod
-
-You can build AntennaPod just like any other Android project. Refer to the [instructions](https://github.com/AntennaPod/AntennaPod/blob/develop/CONTRIBUTING.md) for more details.
+GarlicPod is an independent derivative, not an official AntennaPod release. Preserve GPL notices and provide matching
+source when distributing APKs. Modifications and validation are tracked in PROJECT_STATUS.md and Git history.
 
