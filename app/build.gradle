@@ -32,7 +32,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            resValue "string", "app_name", "GarlicPod Debug"
+            resValue "string", "app_name", "GarlicPod"
             resValue "string", "provider_authority", "com.garlicsoftware.garlicpod.debug.provider"
         }
         release {

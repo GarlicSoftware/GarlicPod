@@ -178,3 +178,10 @@ No data reset or subscription import was performed.
 - Both debug variants passed :app:assembleDebug in 16 seconds; free debug update installed successfully.
 - Verified the new GarlicPod Debug icon in the Galaxy S22 Ultra app drawer and the existing episode shortcut badge.
 - Themed monochrome rendering and legacy Android launchers were not device-tested.
+
+## Display name
+
+- Debug and release builds now both display GarlicPod, without a Debug suffix.
+- Kept the installed application ID and update identity unchanged to preserve existing data.
+- Both debug variants passed :app:assembleDebug in 16 seconds; free debug update installed successfully.
+- Verified GarlicPod text and accessible label in the Galaxy S22 Ultra app drawer.
