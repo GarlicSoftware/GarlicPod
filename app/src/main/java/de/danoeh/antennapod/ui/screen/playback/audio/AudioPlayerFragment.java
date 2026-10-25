@@ -104,7 +104,6 @@ public class AudioPlayerFragment extends Fragment implements
 
     private FeedMedia currentMedia;
     private Disposable disposable;
-    private boolean showTimeLeft;
     private boolean seekedToChapterStart = false;
     private int currentChapterIndex = -1;
 
@@ -146,7 +145,6 @@ public class AudioPlayerFragment extends Fragment implements
         cardViewSeek = root.findViewById(R.id.cardViewSeek);
         txtvSeek = root.findViewById(R.id.txtvSeek);
 
-        setupLengthTextView();
         setupControlButtons(root);
         sbPosition.setOnSeekBarChangeListener(this);
 
@@ -312,19 +310,6 @@ public class AudioPlayerFragment extends Fragment implements
         }
     }
 
-    private void setupLengthTextView() {
-        showTimeLeft = UserPreferences.shouldShowRemainingTime();
-        txtvLength.setOnClickListener(v -> {
-            if (currentMedia == null) {
-                return;
-            }
-            showTimeLeft = !showTimeLeft;
-            UserPreferences.setShowRemainTimeSetting(showTimeLeft);
-            updatePosition(new PlaybackPositionEvent(currentMedia.getPosition(),
-                    currentMedia.getDuration()));
-        });
-    }
-
     private void loadMediaInfo(boolean includingChapters) {
         if (disposable != null) {
             disposable.dispose();
@@ -456,16 +441,11 @@ public class AudioPlayerFragment extends Fragment implements
         txtvPosition.setText(Converter.getDurationStringLong(convertedPosition));
         txtvPosition.setContentDescription(getString(R.string.position,
                 Converter.getDurationStringLocalized(getContext(), convertedPosition)));
-        showTimeLeft = UserPreferences.shouldShowRemainingTime();
-        if (showTimeLeft) {
-            txtvLength.setContentDescription(getString(R.string.remaining_time,
-                    Converter.getDurationStringLocalized(getContext(), remainingTime)));
-            txtvLength.setText(((remainingTime > 0) ? "-" : "") + Converter.getDurationStringLong(remainingTime));
-        } else {
-            txtvLength.setContentDescription(getString(R.string.chapter_duration,
-                    Converter.getDurationStringLocalized(getContext(), convertedDuration)));
-            txtvLength.setText(Converter.getDurationStringLong(convertedDuration));
-        }
+        txtvLength.setText(getString(R.string.garlicpod_remaining_total,
+                Converter.getDurationStringLong(remainingTime), Converter.getDurationStringLong(convertedDuration)));
+        txtvLength.setContentDescription(getString(R.string.garlicpod_remaining_total_description,
+                Converter.getDurationStringLocalized(getContext(), remainingTime),
+                Converter.getDurationStringLocalized(getContext(), convertedDuration)));
 
         if (!sbPosition.isPressed()) {
             float progress = ((float) event.getPosition()) / event.getDuration();

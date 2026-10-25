@@ -24,3 +24,4 @@ AudioPlayerFragment consumes sticky SleepTimerUpdatedEvent state so the toolbar 
 when the screen is recreated. Its active timer action cancels through the Media3 session command and disables
 SleepTimerPreferences automatic activation. A custom action view keeps the off action visible in portrait.
 The active action view displays remaining time from timer events, or remaining episodes for episode timers.
+The right-hand audio progress label always shows remaining / total time, using the existing playback-speed conversion.

@@ -142,3 +142,11 @@ No data reset or subscription import was performed.
 - Final :app:assembleDebug passed for both variants in 13 seconds after an earlier 18-second build.
 - Installed the final free debug APK. Visually verified the slimmer track, larger time labels, and all three new options
   in the Big forward dialog on the Galaxy S22 Ultra. Dismissed without changing the user's current skip settings.
+
+## Remaining and total time together
+
+- Right-hand progress label now always displays remaining / total, retaining playback-speed conversion and 18 sp size.
+- Removed the former tap-to-toggle behavior and added an accessible remaining/total description.
+- Both debug variants passed :app:assembleDebug in 36 seconds. Installed free debug update.
+- Verified on Galaxy S22 Ultra: elapsed 01:19:11 and right label 00:10:45 / 01:29:56, with no overlap.
+- Left the episode paused. Landscape was not tested for this label change.
