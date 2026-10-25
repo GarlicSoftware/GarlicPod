@@ -75,7 +75,7 @@ Repository is committed on main; no UI or playback-behavior customizations have 
 ## Phase 2 work
 
 User requested 60s back / 10s back / play-pause / 10s forward / 60s forward, with adjustable times.
-The latest layout uses three rows: two rewind targets, full-width play/pause, two forward targets.
+The latest layout uses three rows: full-width play/pause, big rewind/forward, then small rewind/forward.
 Artwork is compact and remains a play/pause target. Existing speed, skip-episode, chapters, and show notes remain available.
 Normal launcher entry requests expanded player when an episode is selected, without starting playback.
 Long-press each skip target to use the existing interval dialog (5, 10, 15, 20, 30, 45, 60 seconds).
@@ -99,3 +99,13 @@ No data reset or subscription import was performed.
 - Final :app:assembleDebug passed for both variants in 42s. Updated free-debug APK installed successfully.
 - No unit tests/lint run; validation used the real phone. Landscape layout and Bluetooth remain untested.
 - Left the current episode paused on the full player.
+
+## Player layout and Home replacement
+
+- Rearranged controls to play/pause on top, 60-second rewind/forward in row two, and 10-second rewind/forward in row three.
+- Progress track targets 5.5 mm through Android display metrics, with a 40 dp handle and 64 dp touch area.
+- Replaced Home navigation with Player and redirected legacy Home routes. Subscriptions is the fallback with no selected episode.
+- Both debug variants passed :app:assembleDebug; final incremental build completed in 7 seconds.
+- Installed the free debug update and visually checked the three rows and thicker slider on the Galaxy S22 Ultra.
+- Verified cold launch opens playback, Subscriptions remains accessible, and Player returns to full playback.
+- Playback remained paused at 01:15:43 during navigation checks. Physical millimeter size was not measured with a ruler.

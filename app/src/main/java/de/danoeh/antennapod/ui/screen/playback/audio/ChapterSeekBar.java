@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import de.danoeh.antennapod.R;
 import de.danoeh.antennapod.ui.common.ThemeUtils;
 
@@ -16,6 +17,7 @@ public class ChapterSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
     private float center;
     private float bottom;
     private float density;
+    private float halfTrackHeight;
     private float progressPrimary;
     private float progressSecondary;
     private float[] dividerPos;
@@ -42,6 +44,8 @@ public class ChapterSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
         setBackground(null); // Removes the thumb shadow
         dividerPos = null;
         density = context.getResources().getDisplayMetrics().density;
+        halfTrackHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 5.5f,
+                context.getResources().getDisplayMetrics()) / 2;
 
         paintBackground.setColor(ThemeUtils.getColorFromAttr(getContext(), R.attr.colorSurfaceVariant));
         paintBackground.setAlpha(128);
@@ -78,8 +82,8 @@ public class ChapterSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         center = (getBottom() - getPaddingBottom() - getTop() - getPaddingTop()) / 2.0f;
-        top = center - density * 1.5f;
-        bottom = center + density * 1.5f;
+        top = center - halfTrackHeight;
+        bottom = center + halfTrackHeight;
         width = (float) (getRight() - getPaddingRight() - getLeft() - getPaddingLeft());
         progressSecondary = getSecondaryProgress() / (float) getMax() * width;
         progressPrimary = getProgress() / (float) getMax() * width;
@@ -105,8 +109,8 @@ public class ChapterSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
         final int saveCount = canvas.save();
         int currChapter = 1;
         float chapterMargin = density * 1.2f;
-        float topExpanded = center - density * 2.0f;
-        float bottomExpanded = center + density * 2.0f;
+        float topExpanded = top - density;
+        float bottomExpanded = bottom + density;
 
         canvas.translate(getPaddingLeft(), getPaddingTop());
 

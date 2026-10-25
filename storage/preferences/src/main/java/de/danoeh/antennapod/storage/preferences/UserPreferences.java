@@ -761,7 +761,8 @@ public abstract class UserPreferences {
     }
 
     public static String getDefaultPage() {
-        return prefs.getString(PREF_DEFAULT_PAGE, "HomeFragment");
+        String page = prefs.getString(PREF_DEFAULT_PAGE, "SubscriptionFragment");
+        return "HomeFragment".equals(page) ? "SubscriptionFragment" : page;
     }
 
     public static void setDefaultPage(String defaultPage) {

@@ -18,7 +18,7 @@ public abstract class NavigationNames {
     public static @DrawableRes int getDrawable(String tag) {
         switch (tag) {
             case HomeFragment.TAG:
-                return R.drawable.ic_home;
+                return R.drawable.ic_play_48dp;
             case QueueFragment.TAG:
                 return R.drawable.ic_playlist_play;
             case InboxFragment.TAG:
@@ -45,7 +45,7 @@ public abstract class NavigationNames {
     public static @StringRes int getLabel(String tag) {
         switch (tag) {
             case HomeFragment.TAG:
-                return R.string.home_label;
+                return R.string.garlicpod_player;
             case QueueFragment.TAG:
                 return R.string.queue_label;
             case InboxFragment.TAG:
@@ -74,7 +74,7 @@ public abstract class NavigationNames {
     public static @StringRes int getShortLabel(String tag) {
         switch (tag) {
             case HomeFragment.TAG:
-                return R.string.home_label_short;
+                return R.string.garlicpod_player;
             case QueueFragment.TAG:
                 return R.string.queue_label_short;
             case InboxFragment.TAG:

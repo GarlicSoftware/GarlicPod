@@ -149,6 +149,10 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
         bottomNavigation = new BottomNavigation(findViewById(R.id.bottomNavigationView)) {
             @Override
             public void onItemSelected(@IdRes int itemId) {
+                if (itemId == R.id.bottom_navigation_home) {
+                    loadFragment(HomeFragment.TAG, null);
+                    return;
+                }
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 if (itemId == R.id.bottom_navigation_settings) {
                     startActivity(new Intent(MainActivity.this, PreferenceActivity.class));
@@ -321,6 +325,9 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
                 bottomSheetBackPressedCallback.setEnabled(false);
             } else if (state == BottomSheetBehavior.STATE_EXPANDED) {
                 onSlide(view, 1.0f);
+                if (bottomNavigation != null) {
+                    bottomNavigation.updateSelectedItem(HomeFragment.TAG);
+                }
                 bottomSheetBackPressedCallback.setEnabled(true);
             } else if (state == BottomSheetBehavior.STATE_HIDDEN) {
                 PlaybackController.bindToMedia3Service(MainActivity.this, controller -> {
@@ -453,7 +460,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
         Fragment fragment;
         switch (tag) {
             case HomeFragment.TAG:
-                fragment = new HomeFragment();
+                fragment = new SubscriptionFragment();
                 break;
             case QueueFragment.TAG:
                 fragment = new QueueFragment();
@@ -487,7 +494,7 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
                 break;
             default:
                 // default to home screen
-                fragment = new HomeFragment();
+                fragment = new SubscriptionFragment();
                 args = null;
                 break;
         }
@@ -498,6 +505,18 @@ public class MainActivity extends CastEnabledActivity implements NavigationToolb
     }
 
     public void loadFragment(String tag, Bundle args) {
+        if (HomeFragment.TAG.equals(tag)) {
+            if (sheetBehavior != null && PlaybackPreferences.getCurrentlyPlayingFeedMediaId() > 0) {
+                if (playerVisible) {
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    bottomSheetCallback.onSlide(null, 1.0f);
+                } else {
+                    openPlayerWhenAvailable = true;
+                }
+                return;
+            }
+            tag = SubscriptionFragment.TAG;
+        }
         NavDrawerFragment.saveLastNavFragment(this, tag);
         if (bottomNavigation != null) {
             bottomNavigation.updateSelectedItem(tag);

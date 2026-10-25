@@ -14,3 +14,8 @@ Skip interval dialogs share `SkipPreferenceDialog`; preserve independent big-ski
 MainActivity defers player expansion until `setPlayerVisible(true)` signals media is ready.
 Its process lifecycle observer requests player expansion when returning from background without a new launch intent.
 Keep explicit feed/episode navigation ahead of the open-player intent branch, and do not start audio from navigation.
+
+The Home navigation identifier now represents Player and expands the playback sheet. Legacy Home routes
+fall back to Subscriptions when no episode is selected; MainActivity does not instantiate the Home dashboard.
+Control rows are play/pause, big rewind/forward, then small rewind/forward. ChapterSeekBar draws a nominal
+5.5 mm track using display metrics; its layout provides a 64 dp touch area and a 40 dp thumb.

@@ -1042,4 +1042,5 @@
     <string name="garlicpod_small_forward">Small forward</string>
     <string name="garlicpod_big_forward">Big forward</string>
     <string name="garlicpod_skip_hint">Hold a skip button to change its seconds</string>
+    <string name="garlicpod_player">Player</string>
 </resources>
