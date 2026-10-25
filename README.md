@@ -63,4 +63,5 @@ Big rewind and big forward have independent saved settings. Small skips reuse An
 Artwork also toggles play/pause. Player replaces Home in navigation; the old dashboard routes open playback.
 Use the bottom navigation to manage podcasts. With no selected episode, Subscriptions opens.
 Playback speed is an icon beside Favorite. The sleep icon is grey when off; an active timer shows a
-Turn off timer button that cancels the timer and disables automatic activation.
+live countdown with a tap-to-turn-off label. Tapping it cancels the timer and disables automatic activation.
+The audio player has no next-episode button.

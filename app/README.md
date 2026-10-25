@@ -23,3 +23,4 @@ Control rows are play/pause, big rewind/forward, then small rewind/forward. Chap
 AudioPlayerFragment consumes sticky SleepTimerUpdatedEvent state so the toolbar reflects an existing timer
 when the screen is recreated. Its active timer action cancels through the Media3 session command and disables
 SleepTimerPreferences automatic activation. A custom action view keeps the off action visible in portrait.
+The active action view displays remaining time from timer events, or remaining episodes for episode timers.

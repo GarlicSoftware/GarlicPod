@@ -122,3 +122,14 @@ No data reset or subscription import was performed.
   timer activation, visible off action, and return to the grey icon after direct cancellation.
 - Timer setup requires a running playback service, as upstream does. Started playback briefly to exercise setup.
 - Left the episode paused at 01:17:18 with timer off. Landscape, video, and Bluetooth were not tested in this change.
+
+## Countdown and next-button removal
+
+- Removed the audio player's next-episode button and its click handler.
+- Active sleep timer now displays hours/minutes/seconds remaining with Tap to turn off underneath.
+- Episode-based timers display remaining episodes instead of a misleading time duration.
+- Both debug variants passed :app:assembleDebug in 38 seconds. Installed the free debug APK as an update.
+- Phone validation confirmed the next button is absent and the active countdown fits the toolbar.
+- Countdown decreased from 00:14:53 to 00:14:49 during playback and held while paused, matching service behavior.
+- Verified tapping the countdown cancels it. Left playback paused and the timer off.
+- Episode-mode display, landscape, and Bluetooth were not device-tested in this change.

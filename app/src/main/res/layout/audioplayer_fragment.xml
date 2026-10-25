@@ -281,20 +281,6 @@
                             android:textColor="?attr/colorOnSecondaryContainer" />
                     </LinearLayout>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <ImageButton
-                        android:id="@+id/butSkip"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:padding="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/skip_episode_label"
-                        app:srcCompat="@drawable/ic_skip_48dp" />
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

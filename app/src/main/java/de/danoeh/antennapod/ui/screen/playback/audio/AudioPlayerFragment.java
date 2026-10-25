@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,6 +30,7 @@ import de.danoeh.antennapod.playback.service.PlaybackService;
 import de.danoeh.antennapod.playback.service.PlaybackServiceStarter;
 import de.danoeh.antennapod.playback.service.internal.MediaLibrarySessionCallback;
 import de.danoeh.antennapod.storage.preferences.SleepTimerPreferences;
+import de.danoeh.antennapod.storage.preferences.SleepTimerType;
 import de.danoeh.antennapod.ui.common.ThemeUtils;
 import de.danoeh.antennapod.storage.database.DBReader;
 import de.danoeh.antennapod.storage.database.DBWriter;
@@ -97,7 +97,6 @@ public class AudioPlayerFragment extends Fragment implements
     private PlayButton butPlay;
     private View butFF;
     private TextView txtvFF;
-    private ImageButton butSkip;
     private MaterialToolbar toolbar;
     private ProgressBar progressIndicator;
     private CardView cardViewSeek;
@@ -143,7 +142,6 @@ public class AudioPlayerFragment extends Fragment implements
         butPlay = root.findViewById(R.id.butPlay);
         butFF = root.findViewById(R.id.butFF);
         txtvFF = root.findViewById(R.id.txtvFF);
-        butSkip = root.findViewById(R.id.butSkip);
         progressIndicator = root.findViewById(R.id.progLoading);
         cardViewSeek = root.findViewById(R.id.cardViewSeek);
         txtvSeek = root.findViewById(R.id.txtvSeek);
@@ -266,14 +264,6 @@ public class AudioPlayerFragment extends Fragment implements
                     SkipPreferenceDialog.SkipDirection.SKIP_FORWARD, txtvFF);
             return true;
         });
-        butSkip.setOnClickListener(v -> {
-            if (BuildConfig.USE_MEDIA3_PLAYBACK_SERVICE) {
-                PlaybackController.bindToMedia3Service(getContext(), MediaController::seekToNextMediaItem);
-            } else {
-                getActivity().sendBroadcast(
-                        MediaButtonStarter.createIntent(getContext(), KeyEvent.KEYCODE_MEDIA_NEXT));
-            }
-        });
     }
 
     private void seekBySeconds(int seconds) {
@@ -383,6 +373,15 @@ public class AudioPlayerFragment extends Fragment implements
     public void sleepTimerUpdate(SleepTimerUpdatedEvent event) {
         boolean timerActive = !event.isCancelled() && !event.isOver();
         updateSleepTimerMenu(timerActive);
+        if (timerActive) {
+            String remaining = SleepTimerPreferences.getSleepTimerType() == SleepTimerType.EPISODES
+                    ? getResources().getQuantityString(R.plurals.num_episodes,
+                            (int) event.getDisplayTimeLeft(), (int) event.getDisplayTimeLeft())
+                    : Converter.getDurationStringLong((int) Math.min(Integer.MAX_VALUE, event.getMillisTimeLeft()));
+            TextView countdown = (TextView) toolbar.getMenu().findItem(R.id.disable_sleeptimer_item).getActionView();
+            countdown.setText(getString(R.string.garlicpod_sleep_countdown, remaining));
+            countdown.setContentDescription(getString(R.string.garlicpod_sleep_countdown, remaining));
+        }
         if (event.isCancelled() || event.wasJustEnabled() || event.isOver()) {
             AudioPlayerFragment.this.loadMediaInfo(false);
         }
